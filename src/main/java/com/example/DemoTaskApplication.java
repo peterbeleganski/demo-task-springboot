@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.config.MyRoute;
 import com.example.entity.Person;
 import com.example.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class DemoTaskApplication implements CommandLineRunner {
 
 	@Autowired
 	private PersonRepository repository;
+
+	@Autowired
+	private MyRoute route;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoTaskApplication.class, args);
@@ -35,6 +39,9 @@ public class DemoTaskApplication implements CommandLineRunner {
 
 		this.repository.save(people);
 
-		System.out.println("People seed added successfully!");
+		System.out.println("Configuring ROUTE:\n");
+		this.route.configure();
+
+		// System.out.println("People seed added successfully!");
 	}
 }
