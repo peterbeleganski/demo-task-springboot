@@ -3,6 +3,8 @@ package com.example;
 import com.example.config.MyRoute;
 import com.example.entity.Person;
 import com.example.repository.PersonRepository;
+import org.apache.camel.CamelContext;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -30,7 +32,8 @@ public class DemoTaskApplication implements CommandLineRunner {
 				"Peter",
 				"Beleganski",
 				"Main 1 Street",
-				19
+				19,
+				"Plovdiv"
 		);
 
 		List<Person> people = Arrays.asList(pepi);
@@ -38,10 +41,11 @@ public class DemoTaskApplication implements CommandLineRunner {
 		this.repository.deleteAll();
 
 		this.repository.save(people);
-
-		System.out.println("Configuring ROUTE:\n");
 		this.route.configure();
+		//System.out.println("Configuring ROUTE:\n");
 
 		// System.out.println("People seed added successfully!");
+
+
 	}
 }

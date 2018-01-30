@@ -12,16 +12,28 @@ public class Person {
     private String lastName;
     private String streetAddress;
     private Integer age;
+	private String bornTown;
 
+	public Person() {
+	}
 
-    public Person(String firstName, String lastName, String streetAddress, Integer age) {
+	public Person(String firstName, String lastName, String streetAddress, Integer age, String bornTown) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.streetAddress = streetAddress;
         this.age = age;
+        this.bornTown = bornTown;
     }
 
-    public String getId() {
+	public String getBornTown() {
+		return bornTown;
+	}
+
+	public void setBornTown(String bornTown) {
+		this.bornTown = bornTown;
+	}
+
+	public String getId() {
         return Id;
     }
 
