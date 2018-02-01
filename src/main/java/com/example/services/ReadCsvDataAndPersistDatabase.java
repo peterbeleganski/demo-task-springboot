@@ -1,5 +1,9 @@
 package com.example.services;
 
+import com.example.entity.CsvParsedFile;
+import com.example.entity.CsvPerson;
+import com.example.entity.Person;
+import com.example.repository.CsvFilesRepository;
 import com.example.repository.PersonRepository;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -10,6 +14,8 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,37 +25,65 @@ public class ReadCsvDataAndPersistDatabase {
     @Autowired
     private PersonRepository repository;
 
-    public Object readCsvData(String fileName) {
+    @Autowired
+    private CsvFilesRepository csvFilesRepository;
+
+    public CsvParsedFile readCsvData(String fileName) {
+
+
+        if (checkIfFileExists(fileName)) return null;
 
         CamelContext context = new DefaultCamelContext();
 
         CsvDataFormat csv = new CsvDataFormat();
 
+        final CsvParsedFile[] file = {null};
+
         try {
             context.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
-                    from("file://src/main/resources/output?fileName=b5a5550e28a73d1748344668194c1838c2868e63.csv&noop=true&delay=15m")
+                    from("file://src/main/resources/output?fileName="+fileName +".csv&noop=true&delay=15m")
                             .unmarshal(csv)
                             .convertBodyTo(List.class)
                             .process(msg -> {
-                                List<List<String>> data = (List<List<String>>) msg.getIn().getBody();
-                                for (List<String> line : data) {
-                                    System.out.println(line);
-                                }
-                            }).marshal(csv).to("file://src/main/resources?fileName=out.csv")
-                            .log("done.").end();
+                                List<CsvPerson> rowsData = getCsvPeople(msg);
+                                file[0] = new CsvParsedFile(fileName, rowsData);
+                                csvFilesRepository.save(file[0]);
+                            }).end();
                 }
             });
 
             context.start();
-            Thread.sleep(2000);
-
             context.stop();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return null;
+        return file[0];
+    }
+
+
+    private boolean checkIfFileExists(String fileName) {
+        File f = new File("/src/main/resources/output/" + fileName + ".csv");
+        if(!f.exists() && f.isDirectory()) {
+            return true;
+        }
+        return false;
+    }
+
+    private List<CsvPerson> getCsvPeople(Exchange msg) {
+        List<List<String>> data = (List<List<String>>) msg.getIn().getBody();
+        List<CsvPerson> rowsData = new ArrayList<>();
+        for (List<String> line : data) {
+
+            rowsData
+                    .add(new CsvPerson(line.get(0),
+                            line.get(1),
+                            line.get(2),
+                            Integer.parseInt(line.get(3)),
+                            line.get(4)));
+        }
+        return rowsData;
     }
 }

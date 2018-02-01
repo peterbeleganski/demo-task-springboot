@@ -1,5 +1,6 @@
 package com.example.controllers;
 
+import com.example.entity.CsvParsedFile;
 import com.example.entity.Person;
 import com.example.repository.PersonRepository;
 import com.example.services.CsvCreatePojoDataToFile;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,26 +26,32 @@ public class PersonController {
     @Autowired
     private ReadCsvDataAndPersistDatabase readCsvDataAndPersistDatabase;
 
-    @RequestMapping("/")
-    public List<Person> getAllPeople() {
-
-        return null;
-    }
-
     @GetMapping("/create-csv/{countRows}")
     public ResponseEntity getFileName(@PathVariable long countRows) {
 
         String fileName = this.csvCreatePojoDataToFile.createFileOnSystem(countRows);
-		return ResponseEntity.ok(fileName);
+
+        Map<String, String> resultSet = new HashMap<>();
+
+        resultSet.put("fileName", fileName);
+
+		return ResponseEntity.ok().body(resultSet);
 	}
 
 
 	@GetMapping("/find-csv/{fileName}")
-	public Map<String, String> getDatabaseStructure(@PathVariable String fileName) {
+	public ResponseEntity getDatabaseStructure(@PathVariable String fileName) {
+        CsvParsedFile file = this.readCsvDataAndPersistDatabase.readCsvData(fileName);
 
-        this.readCsvDataAndPersistDatabase.readCsvData(fileName);
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Given file does not exist on the filesystem!");
 
-        return null;
+        if(file == null) {
+            return ResponseEntity.ok().body(error);
+        } else {
+            return ResponseEntity.ok().body(file);
+        }
+
     }
 
 }

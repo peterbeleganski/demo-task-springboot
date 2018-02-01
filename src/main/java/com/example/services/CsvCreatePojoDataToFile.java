@@ -11,6 +11,8 @@ import org.apache.camel.dataformat.csv.CsvDataFormat;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Service
@@ -22,13 +24,14 @@ public class CsvCreatePojoDataToFile {
         String fileName = functions.encryptString();
         CamelContext context = new DefaultCamelContext();
         CsvDataFormat csv = new CsvDataFormat();
-        csv.setSkipHeaderRecord(true);
+
+        ensureFileStartExists();
 
         try {
             context.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
-                    from("file://src/main/resources?fileName=test.csv&noop=true&delay=15m")
+                    from("file://src/main/resources/output?fileName=test.csv&noop=true&delay=15m")
                             .unmarshal(csv)
                             .convertBodyTo(String.class)
                             .process(msg -> {
@@ -49,20 +52,36 @@ public class CsvCreatePojoDataToFile {
         }
     }
 
+    private void ensureFileStartExists() {
+        try {
+            File file = new File("C:/Users/petar.beleganski/Desktop/demo-task-springboot/src/main/resources/output/test.csv");
+            boolean fvar = file.createNewFile();
+            if (fvar){
+                System.out.println("File has been created successfully");
+            }
+            else{
+                System.out.println("File already present at the specified location");
+            }
+        } catch (IOException e) {
+            System.out.println("Exception Occurred:");
+            e.printStackTrace();
+        }
+    }
+
     private ArrayList<ArrayList<String>> getArrayListData(long countRows) {
         ArrayList<ArrayList<String>> list = new ArrayList<>();
 
-        Person pepi = new Person("pepi", "bel", "main street", 19, "pld");
+        Person personData = new Person("pepi", "bel", "main street", 19, "pld");
 
         for(int i=0;i < countRows;i++) {
 
             ArrayList<String> data = new ArrayList<>();
 
-            data.add(pepi.getFirstName());
-            data.add(pepi.getLastName());
-            data.add(pepi.getStreetAddress());
-            data.add(pepi.getAge().toString());
-            data.add(pepi.getBornTown());
+            data.add(personData.getFirstName());
+            data.add(personData.getLastName());
+            data.add(personData.getStreetAddress());
+            data.add(personData.getAge().toString());
+            data.add(personData.getBornTown());
 
             list.add(data);
         }
