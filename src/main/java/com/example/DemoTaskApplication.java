@@ -1,6 +1,5 @@
 package com.example;
 
-import com.example.config.MyRoute;
 import com.example.entity.Person;
 import com.example.repository.PersonRepository;
 import org.apache.camel.CamelContext;
@@ -19,8 +18,6 @@ public class DemoTaskApplication implements CommandLineRunner {
 	@Autowired
 	private PersonRepository repository;
 
-	@Autowired
-	private MyRoute route;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoTaskApplication.class, args);
@@ -41,7 +38,7 @@ public class DemoTaskApplication implements CommandLineRunner {
 		this.repository.deleteAll();
 
 		this.repository.save(people);
-		this.route.configure();
+
 		//System.out.println("Configuring ROUTE:\n");
 
 		// System.out.println("People seed added successfully!");

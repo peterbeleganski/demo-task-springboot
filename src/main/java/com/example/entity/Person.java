@@ -72,4 +72,10 @@ public class Person {
     public void setAge(Integer age) {
         this.age = age;
     }
+
+    @Override
+    public String toString() {
+        return this.getFirstName() + "," + this.getLastName() + "," + this.getStreetAddress() + "," +
+                + this.getAge() + "," + this.getBornTown();
+    }
 }

@@ -1,3 +1,4 @@
+/*
 package com.example.config;
 
 import org.apache.camel.Exchange;
@@ -41,7 +42,8 @@ public class MyRoute extends RouteBuilder {
 
 		csv.setSkipHeaderRecord(true);
 
-		from("file://src/main/resources?fileName=test.csv&noop=true&delay=15m")
+		*/
+/*from("file://src/main/resources?fileName=test.csv&noop=true&delay=15m")
 				.unmarshal(csv)
 				.convertBodyTo(List.class)
 				.process(new Processor() {
@@ -54,6 +56,8 @@ public class MyRoute extends RouteBuilder {
 						msg.getIn().setBody(list, ArrayList.class);
 					}
 				}).marshal(csv).to("file://src/main/resources?fileName=out.csv")
-				.log("done.").end();
+				.log("done.").end();*//*
+
 	}
 }
+*/
