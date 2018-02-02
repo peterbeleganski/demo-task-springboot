@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class CustomFunctions {
 
-    String generateRandomWord(int wordLength) {
+    private String generateRandomWord(int wordLength) {
         Random r = new Random(); // Intialize a Random Number Generator with SysTime as the seed
         StringBuilder sb = new StringBuilder(wordLength);
         for(int i = 0; i < wordLength; i++) { // For each letter in the word
@@ -25,14 +25,6 @@ public class CustomFunctions {
             sb.append(tmp); // Add it to the String
         }
         return sb.toString();
-    }
-
-    public static boolean checkIfFileExists(String fileName) {
-        File f = new File("/src/main/resources/output/" + fileName + ".csv");
-        if(!f.exists() && f.isDirectory()) {
-            return true;
-        }
-        return false;
     }
 
     public void startContext(CamelContext context) throws Exception {
@@ -66,11 +58,7 @@ public class CustomFunctions {
             crypt.update(value.getBytes("UTF-8"));
             sha1 = byteToHex(crypt.digest());
         }
-        catch(NoSuchAlgorithmException e)
-        {
-            e.printStackTrace();
-        }
-        catch(UnsupportedEncodingException e)
+        catch(NoSuchAlgorithmException | UnsupportedEncodingException e)
         {
             e.printStackTrace();
         }
