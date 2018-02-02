@@ -5,6 +5,7 @@ import com.example.entity.CsvPerson;
 import com.example.entity.Person;
 import com.example.repository.CsvFilesRepository;
 import com.example.repository.PersonRepository;
+import com.example.util.CustomFunctions;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -18,23 +19,21 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.util.CustomFunctions.checkIfFileExists;
+import static com.example.util.CustomFunctions.getCsvPeople;
+import static com.example.util.FileConstants.LOG_MESSAGE_DONE;
+import static com.example.util.FileConstants.OUTPUT_FILES_URL;
+
 
 @Service
-public class ReadCsvDataAndPersistDatabase {
-
+public class ReadCsvData {
     @Autowired
-    private PersonRepository repository;
-
-    @Autowired
-    private CsvFilesRepository csvFilesRepository;
+    private FileDataService fileDataService;
 
     public CsvParsedFile readCsvData(String fileName) {
-
-
         if (checkIfFileExists(fileName)) return null;
 
         CamelContext context = new DefaultCamelContext();
-
         CsvDataFormat csv = new CsvDataFormat();
 
         final CsvParsedFile[] file = {null};
@@ -43,19 +42,17 @@ public class ReadCsvDataAndPersistDatabase {
             context.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
-                    from("file://src/main/resources/output?fileName="+fileName +".csv&noop=true&delay=15m")
+                    from(OUTPUT_FILES_URL +fileName +".csv&noop=true")
                             .unmarshal(csv)
                             .convertBodyTo(List.class)
                             .process(msg -> {
-                                List<CsvPerson> rowsData = getCsvPeople(msg);
-                                file[0] = new CsvParsedFile(fileName, rowsData);
-                                csvFilesRepository.save(file[0]);
-                            }).end();
+                                parseDataToService(msg, file, fileName); })
+                            .log(LOG_MESSAGE_DONE)
+                            .end();
                 }
             });
 
-            context.start();
-            context.stop();
+            new CustomFunctions().startContext(context);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,27 +60,9 @@ public class ReadCsvDataAndPersistDatabase {
         return file[0];
     }
 
-
-    private boolean checkIfFileExists(String fileName) {
-        File f = new File("/src/main/resources/output/" + fileName + ".csv");
-        if(!f.exists() && f.isDirectory()) {
-            return true;
-        }
-        return false;
-    }
-
-    private List<CsvPerson> getCsvPeople(Exchange msg) {
-        List<List<String>> data = (List<List<String>>) msg.getIn().getBody();
-        List<CsvPerson> rowsData = new ArrayList<>();
-        for (List<String> line : data) {
-
-            rowsData
-                    .add(new CsvPerson(line.get(0),
-                            line.get(1),
-                            line.get(2),
-                            Integer.parseInt(line.get(3)),
-                            line.get(4)));
-        }
-        return rowsData;
+    public void parseDataToService(Exchange msg, CsvParsedFile[] file, String fileName) {
+        List<CsvPerson> rowsData = getCsvPeople(msg);
+        file[0] = new CsvParsedFile(fileName, rowsData);
+        fileDataService.saveCsvToDatabase(file[0]);
     }
 }

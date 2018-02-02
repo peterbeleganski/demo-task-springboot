@@ -1,6 +1,9 @@
 package com.example;
 
+import com.example.entity.CsvParsedFile;
+import com.example.entity.CsvPerson;
 import com.example.entity.Person;
+import com.example.repository.CsvFilesRepository;
 import com.example.repository.PersonRepository;
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -9,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,6 +22,8 @@ public class DemoTaskApplication implements CommandLineRunner {
 	@Autowired
 	private PersonRepository repository;
 
+	@Autowired
+	private CsvFilesRepository filesRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoTaskApplication.class, args);
@@ -25,6 +31,10 @@ public class DemoTaskApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... strings) throws Exception {
+		seedInitialDataForPesonAndFile();
+	}
+
+	private void seedInitialDataForPesonAndFile() {
 		Person pepi = new Person(
 				"Peter",
 				"Beleganski",
@@ -33,16 +43,16 @@ public class DemoTaskApplication implements CommandLineRunner {
 				"Plovdiv"
 		);
 
+		List<CsvPerson> pepps = new ArrayList<>();
+		CsvPerson csvPerson = new CsvPerson("firstName", "lastName", "main 1 steeet", 19,"plovdiv");
+		pepps.add(csvPerson);
+
+		CsvParsedFile file = new CsvParsedFile("mytest",pepps);
+		this.filesRepository.deleteAll();
+		this.filesRepository.save(file);
+
 		List<Person> people = Arrays.asList(pepi);
-
 		this.repository.deleteAll();
-
 		this.repository.save(people);
-
-		//System.out.println("Configuring ROUTE:\n");
-
-		// System.out.println("People seed added successfully!");
-
-
 	}
 }
