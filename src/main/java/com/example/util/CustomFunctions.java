@@ -67,7 +67,7 @@ public class CustomFunctions {
 
     public void ensureFileStartExists() {
         try {
-            File file = new File("C:/Users/petar.beleganski/Desktop/demo-task-springboot/src/main/resources/output/test.csv");
+            File file = new File(System.getProperty("user.dir") +"/src/main/resources/output/test.csv");
             boolean fvar = file.createNewFile();
             if (fvar){
                 System.out.println("File has been created successfully");

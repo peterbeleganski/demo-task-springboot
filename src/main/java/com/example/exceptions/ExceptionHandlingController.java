@@ -16,4 +16,13 @@ public class ExceptionHandlingController {
 
         return new ResponseEntity<ExceptionResponse>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ExceptionResponse> badRegueest(BadRequestException ex) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setErrorCode("Invalid input parameters");
+        response.setErrorMessage(ex.getMessage());
+
+        return new ResponseEntity<ExceptionResponse>(response, HttpStatus.BAD_REQUEST);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.services;
 
+import com.example.exceptions.BadRequestException;
 import com.example.util.CustomFunctions;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Processor;
@@ -17,6 +18,8 @@ import static com.example.util.FileConstants.OUTPUT_FILES_URL;
 public class CsvCreatePojoData {
 
     public String createFileOnSystem(long countRows) {
+
+        if(countRows <= 0) throw new BadRequestException(countRows, "Input number must be greater than 0!");
 
         CustomFunctions functions = new CustomFunctions();
 
