@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.List;
 
 import static com.example.util.CustomFunctions.getCsvPeople;
+import static com.example.util.CustomFunctions.startContext;
 import static com.example.util.FileConstants.LOG_MESSAGE_DONE;
 import static com.example.util.FileConstants.OUTPUT_FILES_URL;
 
@@ -46,7 +47,7 @@ public class ReadCsvData {
                 }
             });
 
-            new CustomFunctions().startContext(context);
+        startContext(context);
         } catch (Exception e) {
             e.printStackTrace();
         }

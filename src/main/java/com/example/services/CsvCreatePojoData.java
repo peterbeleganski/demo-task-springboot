@@ -10,6 +10,7 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
+import static com.example.util.CustomFunctions.startContext;
 import static com.example.util.FileConstants.INITIAL_URL;
 import static com.example.util.FileConstants.LOG_MESSAGE_DONE;
 import static com.example.util.FileConstants.OUTPUT_FILES_URL;
@@ -43,7 +44,7 @@ public class CsvCreatePojoData {
                             .end();
                 }
             });
-            new CustomFunctions().startContext(context);
+            startContext(context);
         } catch (Exception e) {
             e.printStackTrace();
         }

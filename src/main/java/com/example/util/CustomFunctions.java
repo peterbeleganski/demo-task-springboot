@@ -27,7 +27,7 @@ public class CustomFunctions {
         return sb.toString();
     }
 
-    public void startContext(CamelContext context) throws Exception {
+    public static void startContext(CamelContext context) throws Exception {
         context.start();
         Thread.sleep(1100);
         context.stop();
