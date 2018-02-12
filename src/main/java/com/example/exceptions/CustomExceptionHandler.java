@@ -3,11 +3,12 @@ package com.example.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class CustomExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ExceptionResponse> resourceNotFound(ResourceNotFoundException ex) {
         ExceptionResponse response = new ExceptionResponse();
         response.setErrorCode("Not Found");
@@ -16,7 +17,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<ExceptionResponse>(response, HttpStatus.NOT_FOUND);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ExceptionResponse> badRegueest(BadRequestException ex) {
         ExceptionResponse response = new ExceptionResponse();
         response.setErrorCode("Invalid input parameters");
@@ -25,7 +26,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<ExceptionResponse>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(CsvNotCreatedException.class)
+    @ExceptionHandler(CsvNotCreatedException.class)
     public ResponseEntity<ExceptionResponse> csvNotCreated(BadRequestException ex) {
         ExceptionResponse response = new ExceptionResponse();
         response.setErrorCode("Something with csv happened!");

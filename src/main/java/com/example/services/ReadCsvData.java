@@ -50,11 +50,7 @@ public class ReadCsvData {
             e.printStackTrace();
         }
 
-        if(file == null) {
-            throw new ResourceNotFoundException(fileName, "Not found file with given name!");
-        }
-
-        if(file[0] == null) {
+        if(file == null || file[0] == null ) {
             throw new ResourceNotFoundException(fileName, "Not found file with given name!");
         }
 
