@@ -1,5 +1,6 @@
 package com.example.controllers;
 
+import com.example.exceptions.CsvNotCreatedException;
 import com.example.services.CsvCreatePojoData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class CreateFileController {
     private CsvCreatePojoData csvCreatePojoData;
 
     @GetMapping("/create-csv/{countRows}")
-    public ResponseEntity getFileName(@PathVariable long countRows) {
+    public ResponseEntity getFileName(@PathVariable long countRows) throws CsvNotCreatedException {
 
         String fileName = this.csvCreatePojoData.createFileOnSystem(countRows);
 

@@ -15,7 +15,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Random;
 
-public class CustomFunctions {
+public class Utils {
 
     private String generateRandomWord(int wordLength) {
         Random r = new Random(); // Intialize a Random Number Generator with SysTime as the seed
@@ -27,7 +27,7 @@ public class CustomFunctions {
         return sb.toString();
     }
 
-    public static void startContext(CamelContext context) throws Exception {
+    public void startContext(CamelContext context) throws Exception {
         context.start();
         Thread.sleep(1100);
         context.stop();
@@ -67,7 +67,7 @@ public class CustomFunctions {
 
     public void ensureFileStartExists() {
         try {
-            File file = new File(System.getProperty("user.dir") +"/src/main/resources/output/test.csv");
+            File file = new File(System.getProperty("user.dir") +"/src/main/resources/output/initial.csv");
             boolean fvar = file.createNewFile();
             if (fvar){
                 System.out.println("File has been created successfully");
